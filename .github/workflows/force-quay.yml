@@ -1,0 +1,25 @@
+name: Force Quay Downloader
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  download_job:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fetch From Quay Directly
+      run: |
+        # 1. 强制从官方最新的 quay.io 仓库拉取
+        docker pull quay.io/gerritforge/gerrit:3.9.5-almalinux9
+        
+        # 2. 洗白名字，伪装成你 docker-compose.yml 里认的名字
+        docker tag quay.io/gerritforge/gerrit:3.9.5-almalinux9 gerritforge/gerrit:3.9.5-almalinux9
+        
+        # 3. 打包成离线 tar 包
+        docker save -o gerrit_image.tar gerritforge/gerrit:3.9.5-almalinux9
+        
+    - name: Upload Image Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: gerrit-tar-package
+        path: gerrit_image.tar
