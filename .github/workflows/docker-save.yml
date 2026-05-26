@@ -9,7 +9,13 @@ jobs:
     steps:
     - name: Pull and Save Docker Image
       run: |
-        docker pull gerritforge/gerrit:3.9.5-almalinux9
+        # 从官方最新的 quay.io 仓库拉取镜像
+        docker pull quay.io/gerritforge/gerrit:3.9.5-almalinux9
+        
+        # 把它重命名为你的 docker-compose.yml 里认的名字，确保完全匹配
+        docker tag quay.io/gerritforge/gerrit:3.9.5-almalinux9 gerritforge/gerrit:3.9.5-almalinux9
+        
+        # 打包成离线 tar 包
         docker save -o gerrit_image.tar gerritforge/gerrit:3.9.5-almalinux9
         
     - name: Upload Image Artifact
