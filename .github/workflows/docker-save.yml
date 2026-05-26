@@ -1,0 +1,19 @@
+name: Docker Image Downloader
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pull and Save Docker Image
+      run: |
+        docker pull gerritforge/gerrit:3.9.5-almalinux9
+        docker save -o gerrit_image.tar gerritforge/gerrit:3.9.5-almalinux9
+        
+    - name: Upload Image Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: gerrit-tar-package
+        path: gerrit_image.tar
